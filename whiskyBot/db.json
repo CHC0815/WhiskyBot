@@ -1,0 +1,25 @@
+{
+  "addBottleUsers": [
+    {
+      "id": 1033239806,
+      "chatid": -426538681,
+      "stage": 0,
+      "bottle": {
+        "bottleid": 21,
+        "chatid": -426538681,
+        "users": [],
+        "boolArr": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      }
+    }
+  ],
+  "bottles": [],
+  "id": 23
+}
