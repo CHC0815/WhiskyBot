@@ -1,5 +1,6 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+const request = require('request');
 
 app.set('view engine', 'ejs');
 
@@ -11,6 +12,16 @@ app.get('/', (req, res) => {
         })
     else
         res.render('index')
+});
+
+app.get('/test', (req, res) => {
+    request('http://localhost:3000/', {}, (err, res, body) => {
+        if (err) {
+            console.log(err);
+            res.send('test was not successful 😥');
+        }
+        res.send(body);
+    });
 });
 
 app.listen(80, () => {
