@@ -53,7 +53,7 @@ async function getAccesTokenFromCode(code) {
             client_secret: process.env.client_secret,
             redirect_uri: process.env.redirect_uri,
             grant_type: 'authorization_code',
-            code
+            code: code
         }
     });
     console.log(data);
