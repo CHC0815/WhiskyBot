@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const request = require('request');
-import * as queryString from 'query-string';
+const queryString = require('query-string');
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
