@@ -12,7 +12,7 @@ pm2 start index.js --name whiskyBot
 cd ..
 
 cd whiskySite
-pm2 start index.js --name whiskySite
+sudo pm2 start index.js --name whiskySite
 cd ..
 
 echo "update done..."
