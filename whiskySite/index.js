@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 
 app.get('/authenticate/google', async (req, res) => {
     let code = req.params.code;
+    console.log(`Code: ${code}`);
     let accessToken = await getAccesTokenFromCode(code);
     let isValidUser = await isValidUser(accessToken);
 
@@ -51,12 +52,12 @@ async function getAccesTokenFromCode(code) {
         data: {
             client_id: process.env.client_id,
             client_secret: process.env.client_secret,
-            redirect_uri: process.env.redirect_uri,
+            redirect_uri: `${process.env.redirect_uri}`,
             grant_type: 'authorization_code',
             code: code
         }
     });
-    console.log(data);
+    console.log(`Data: ${data}`);
     return data.access_token;
 }
 
