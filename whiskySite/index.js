@@ -8,7 +8,7 @@ app.set('view engine', 'ejs');
 
 const stringifiedParams = queryString.stringify({
     client_id: process.env.client_id,
-    redirect_uri: 'https://www.example.com/authenticate/google',
+    redirect_uri: 'http://challenger227.mydhp.de/authenticate/google',
     scope: [
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile',
