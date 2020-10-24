@@ -1,18 +1,17 @@
 {
-  "name": "whiskybot",
+  "name": "whiskysite",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Conrad Heinrich Carl",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "lowdb": "^1.0.0",
-    "telegraf": "^3.38.0",
-    "telegraf-inline-menu": "^5.2.1"
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "googleapis": "^61.0.0"
   }
 }
