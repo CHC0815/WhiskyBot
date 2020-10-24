@@ -7,7 +7,7 @@ require('dotenv').config();
 app.set('view engine', 'ejs');
 
 const stringifiedParams = queryString.stringify({
-    client_id: process.env.CLIENT_ID_GOES_HERE,
+    client_id: process.env.client_id,
     redirect_uri: 'https://www.example.com/authenticate/google',
     scope: [
         'https://www.googleapis.com/auth/userinfo.email',
