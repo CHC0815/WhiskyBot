@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/authenticate/google', (req, res) => {
+app.get('/authenticate/google', async (req, res) => {
     let code = req.params.code;
     let accessToken = await getAccesTokenFromCode(code);
     let isValidUser = await isValidUser(accessToken);
