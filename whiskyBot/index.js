@@ -334,7 +334,7 @@ async function want(ctx, amount) {
 
 bot.action('want_1cl', (ctx) => want(ctx, 1));
 bot.action('want_2cl', (ctx) => want(ctx, 2));
-bot.action('want_3cl', (ctx) => want(ctx, 2));
+bot.action('want_3cl', (ctx) => want(ctx, 3));
 bot.action('want_4cl', (ctx) => want(ctx, 4));
 bot.action('want_5cl', (ctx) => want(ctx, 5));
 bot.action('want_10cl', (ctx) => want(ctx, 10));
