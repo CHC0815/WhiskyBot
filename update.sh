@@ -6,7 +6,7 @@ pm2 stop whiskySite
 pm2 delete whiskyBot
 pm2 delete whiskySite
 
-su -c 'git pull' - conrad
+su -c 'git pull' conrad
 
 bash install.sh
 

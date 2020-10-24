@@ -13,6 +13,7 @@
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "googleapis": "^61.0.0",
+    "query-string": "^6.13.6",
     "request": "^2.88.2"
   }
 }
