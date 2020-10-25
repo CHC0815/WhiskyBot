@@ -1,12 +1,33 @@
 const express = require('express');
-const app = express();
+const Session = require('express-session');
+const google = require('googleapis');
+const OAuth2 = google.auth.OAuth2;
+const plus = google.plus("v2");
 const request = require('request');
 const axios = require('axios');
 const queryString = require('query-string');
 require('dotenv').config();
 
-const whitelist = require('./whitelist.json');
+const low = require('lowdb');
+const {
+    dlp_v2
+} = require('googleapis');
+const {
+    oauth2
+} = require('googleapis/build/src/apis/oauth2');
+const adapter = new FileSync('whitelist.json');
+const db = low(adapter);
 
+db.defaults({
+    allowed: []
+}).write();
+
+const app = express();
+app.use(Session({
+    secret: 'rdnm23186SecReTT54201!..,öasd',
+    resave: true,
+    saveUninitialized: true
+}));
 app.set('view engine', 'ejs');
 
 const stringifiedParams = queryString.stringify({
@@ -22,64 +43,78 @@ const stringifiedParams = queryString.stringify({
 });
 const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`;
 
+
+function getOAuthClient() {
+    return new OAuth2(process.env.client_id, process.env.client_secret, process.env.redirect_uri);
+}
+
+function getAuthUrl() {
+    var oauth2Client = getOAuthClient();
+    var scopes = [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+    ];
+    var url = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: scopes
+    });
+
+    return url;
+}
+
+
 app.get('/', (req, res) => {
     res.render('login', {
-        google_url: googleLoginUrl,
+        google_url: getAuthUrl(),
         extra: ''
     });
 });
 
 app.get('/authenticate/google', async (req, res) => {
-    var valid = false;
+    var oauth2Client = getOAuthClient();
+    var session = req.session;
     var code = req.query.code;
 
-    if (code != undefined) {
-        var accessToken = await getAccesTokenFromCode(code);
-        valid = await isValidUser(accessToken);
-    }
+    oauth2Client.getToken(code, function (err, tokens) {
+        if (!err) {
+            oauth2Client.setCredentials(tokens);
+            session["tokens"] = tokens;
 
-    if (valid) {
-        res.render('index');
-    } else {
-        res.render('login', {
-            google_url: googleLoginUrl,
-            extra: 'You need a whitelisted account!'
-        });
-    }
+            if (isValidUser())
+                res.render('index');
+            else
+                res.render('login', {
+                    google_url: getAuthUrl(),
+                    extra: 'You need a whitelisted account!'
+                });
+        }
+    });
 });
 
-async function getAccesTokenFromCode(authCode) {
-    var data = await axios({
-        url: 'https://oauth2.googleapis.com/token',
-        method: 'post',
-        data: {
-            client_id: process.env.client_id,
-            client_secret: process.env.client_secret,
-            redirect_uri: `${process.env.redirect_uri}`,
-            grant_type: 'authorization_code',
-            code: authCode
-        }
-    });
-    return data.data.access_token;
-}
+async function isValidUser() {
 
-async function isValidUser(accessToken) {
-    var data = await axios({
-        url: 'https://www.googleapis.com/oauth2/v2/userinfo',
-        method: 'get',
-        headers: {
-            Authorization: `Bearer ${accessToken}`
-        }
-    });
-    console.log(data.data);
+    var oauth2Client = getOAuthClient();
+    oauth2Client.setCredentials(req.session["tokens"]);
 
-    //check whether the current user is whitelisted
-    for (var i = 0; i < whitelist.allowed.length; i++) {
-        if (whitelist.allowed[i].email == data.data.email)
+    var p = new Promise(function (resolve, reject) {
+        plus.google.get({
+            userId: 'me',
+            auth: oauth2Client
+        }, function (err, response) {
+            resolve(response || err);
+        });
+    }).then(function (data) {
+        //check whether the current user is whitelisted
+        var user = db.get('allowed').find({
+            email: data.email
+        });
+
+        if (user != undefined) {
             return true;
-    }
-
-    return false;
+        } else {
+            return false;
+        }
+    });
 }
 
 app.get('/test', (req, res) => {

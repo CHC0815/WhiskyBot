@@ -2,7 +2,8 @@
     "allowed": [
         {
             "email": "coheca0815@gmail.com",
-            "telegramID": "1033239806"
+            "telegramID": "1033239806",
+            "access_token": null
         }
     ]
 }
