@@ -34,8 +34,12 @@ app.get('/authenticate/google', async (req, res) => {
     console.log(req.body);
     let code = req.params.code;
     console.log(`Code: ${code}`);
-    let accessToken = await getAccesTokenFromCode(code);
-    let isValidUser = await isValidUser(accessToken);
+    let isValidUser = false;
+
+    if (code) {
+        let accessToken = await getAccesTokenFromCode(code);
+        isValidUser = await isValidUser(accessToken);
+    }
 
     if (isValidUser) {
         res.render('index');
