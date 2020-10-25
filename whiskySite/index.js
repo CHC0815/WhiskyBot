@@ -30,9 +30,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/authenticate/google', async (req, res) => {
-    let code = req.query.code;
+    var code = req.query.code;
     console.log(`Code: ${code}`);
-    let valid = false;
+    var valid = false;
 
     if (code) {
         let accessToken = await getAccesTokenFromCode(code);
@@ -49,7 +49,7 @@ app.get('/authenticate/google', async (req, res) => {
     }
 });
 
-async function getAccesTokenFromCode(code) {
+async function getAccesTokenFromCode(authCode) {
     let data = await axios({
         url: 'https://oauth2.googleapis.com/token',
         method: 'post',
@@ -58,7 +58,7 @@ async function getAccesTokenFromCode(code) {
             client_secret: process.env.client_secret,
             redirect_uri: `${process.env.redirect_uri}`,
             grant_type: 'authorization_code',
-            code: code
+            code: authCode
         }
     });
     console.log(`Data: ${data}`);
