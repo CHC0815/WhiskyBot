@@ -67,7 +67,7 @@ async function getAccesTokenFromCode(code) {
 
 async function isValidUser(accessToken) {
     let data = await axios({
-        url: 'https://www.googleapis.com/aotuh2/v2/userinfo',
+        url: 'https://www.googleapis.com/oauth2/v2/userinfo',
         method: 'get',
         headers: {
             Authorization: `Bearer ${accessToken}`
