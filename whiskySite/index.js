@@ -30,9 +30,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/authenticate/google', async (req, res) => {
-    console.log(req.params);
-    console.log(req.body);
-    let code = req.params.code;
+    let code = req.query.code;
     console.log(`Code: ${code}`);
     let isValidUser = false;
 
