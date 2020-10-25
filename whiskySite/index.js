@@ -32,14 +32,14 @@ app.get('/', (req, res) => {
 app.get('/authenticate/google', async (req, res) => {
     let code = req.query.code;
     console.log(`Code: ${code}`);
-    let isValidUser = false;
+    let valid = false;
 
     if (code) {
         let accessToken = await getAccesTokenFromCode(code);
-        isValidUser = await isValidUser(accessToken);
+        valid = await isValidUser(accessToken);
     }
 
-    if (isValidUser) {
+    if (valid) {
         res.render('index');
     } else {
         res.render('login', {
