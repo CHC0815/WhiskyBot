@@ -34,9 +34,7 @@ app.get('/authenticate/google', async (req, res) => {
     var code = req.query.code;
 
     if (code != undefined) {
-        console.log(`Code: ${code}`);
         var accessToken = await getAccesTokenFromCode(code);
-        console.log(`Access Token: ${accessToken}`);
         valid = await isValidUser(accessToken);
     }
 
@@ -62,11 +60,7 @@ async function getAccesTokenFromCode(authCode) {
             code: authCode
         }
     });
-    data = {
-        data
-    };
-    console.log(`Data: ${data.access_token}`);
-    return data.access_token;
+    return data.data.access_token;
 }
 
 async function isValidUser(accessToken) {
@@ -77,11 +71,11 @@ async function isValidUser(accessToken) {
             Authorization: `Bearer ${accessToken}`
         }
     });
-    console.log(data);
+    console.log(data.data);
 
-    //check wether the current user is whitelisted
+    //check whether the current user is whitelisted
     for (var i = 0; i < whitelist.allowed.length; i++) {
-        if (whitelist.allowed[i].email == data.email)
+        if (whitelist.allowed[i].email == data.data.email)
             return true;
     }
 
