@@ -35,7 +35,7 @@ app.get('/authenticate/google', async (req, res) => {
 
     if (code != undefined) {
         console.log(`Code: ${code}`);
-        let accessToken = await getAccesTokenFromCode(code);
+        var accessToken = await getAccesTokenFromCode(code);
         console.log(`Access Token: ${accessToken}`);
         valid = await isValidUser(accessToken);
     }
@@ -51,7 +51,7 @@ app.get('/authenticate/google', async (req, res) => {
 });
 
 async function getAccesTokenFromCode(authCode) {
-    let data = await axios({
+    var data = await axios({
         url: 'https://oauth2.googleapis.com/token',
         method: 'post',
         data: {
@@ -62,12 +62,15 @@ async function getAccesTokenFromCode(authCode) {
             code: authCode
         }
     });
-    console.log(`Data: ${data}`);
+    data = {
+        data
+    };
+    console.log(`Data: ${data.access_token}`);
     return data.access_token;
 }
 
 async function isValidUser(accessToken) {
-    let data = await axios({
+    var data = await axios({
         url: 'https://www.googleapis.com/oauth2/v2/userinfo',
         method: 'get',
         headers: {
