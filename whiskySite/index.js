@@ -30,12 +30,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/authenticate/google', async (req, res) => {
-    var code = req.query.code;
-    console.log(`Code: ${code}`);
     var valid = false;
+    var code = req.query.code;
 
-    if (code) {
+    if (code != undefined) {
+        console.log(`Code: ${code}`);
         let accessToken = await getAccesTokenFromCode(code);
+        console.log(`Access Token: ${accessToken}`);
         valid = await isValidUser(accessToken);
     }
 
