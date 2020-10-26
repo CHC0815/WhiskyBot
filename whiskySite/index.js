@@ -59,8 +59,26 @@ function getAuthUrl() {
     return url;
 }
 
-
 app.get('/', (req, res) => {
+    var session = req.session;
+    if (session) {
+        var tokens = session["tokens"];
+        if (tokens) {
+            if (isValidUser(tokens)) {
+                res.render('index');
+            } else {
+                res.render('login', {
+                    google_url: getAuthUrl(),
+                    extra: 'You need a whitelisted account!'
+                });
+            }
+        }
+    } else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/login', (req, res) => {
     res.render('login', {
         google_url: getAuthUrl(),
         extra: ''
@@ -76,14 +94,7 @@ app.get('/authenticate/google', async (req, res) => {
         if (!err) {
             oauth2Client.setCredentials(tokens);
             session["tokens"] = tokens;
-
-            if (isValidUser(tokens))
-                res.render('index');
-            else
-                res.render('login', {
-                    google_url: getAuthUrl(),
-                    extra: 'You need a whitelisted account!'
-                });
+            res.redirect('/');
         }
     });
 });
