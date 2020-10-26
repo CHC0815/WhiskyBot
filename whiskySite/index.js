@@ -77,7 +77,7 @@ app.get('/authenticate/google', async (req, res) => {
             oauth2Client.setCredentials(tokens);
             session["tokens"] = tokens;
 
-            if (isValidUser())
+            if (isValidUser(tokens))
                 res.render('index');
             else
                 res.render('login', {
@@ -88,10 +88,10 @@ app.get('/authenticate/google', async (req, res) => {
     });
 });
 
-async function isValidUser() {
+async function isValidUser(tokens) {
 
     var oauth2Client = getOAuthClient();
-    oauth2Client.setCredentials(req.session["tokens"]);
+    oauth2Client.setCredentials(tokens);
 
     var p = new Promise(function (resolve, reject) {
         plus.google.get({
