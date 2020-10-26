@@ -1,20 +1,17 @@
-const express = require('express');
-const Session = require('express-session');
-const google = require('googleapis');
-const OAuth2 = google.auth.OAuth2;
-const plus = google.plus("v2");
-const request = require('request');
-const axios = require('axios');
-const queryString = require('query-string');
+var express = require('express');
+var Session = require('express-session');
+var {
+    google
+} = require('googleapis');
+var OAuth2 = google.auth.OAuth2;
+var plus = google.plus('v1');
+var request = require('request');
+var axios = require('axios');
+var queryString = require('query-string');
 require('dotenv').config();
 
 const low = require('lowdb');
-const {
-    dlp_v2
-} = require('googleapis');
-const {
-    oauth2
-} = require('googleapis/build/src/apis/oauth2');
+const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 
