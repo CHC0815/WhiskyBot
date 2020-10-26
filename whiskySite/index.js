@@ -94,7 +94,7 @@ async function isValidUser(tokens) {
     oauth2Client.setCredentials(tokens);
 
     var p = new Promise(function (resolve, reject) {
-        plus.google.get({
+        plus.people.get({
             userId: 'me',
             auth: oauth2Client
         }, function (err, response) {
