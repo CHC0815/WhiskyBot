@@ -31,7 +31,7 @@ const isLoggedIn = (req, res, next) => {
 app.get('/', (req, res) => res.send('You are not logged in! 😐 <br><a href="/google">Login</a>'))
 app.get('/failed', (req, res) => res.send('You failed to log in! 😥'))
 
-app.get('/whisky', isLoggedIn, (req, res) => res.send(`Moinsen ${req.user.email}`))
+app.get('/whisky', isLoggedIn, (req, res) => res.send(`Moinsen ${req.user.displayName}`))
 
 app.get('/google', passport.authenticate('google', {
     scope: ['profile', 'email']

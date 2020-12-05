@@ -15,5 +15,5 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.client_secret,
     callbackURL: process.env.redirect_uri
 }, function (accessToken, refreshToken, profile, cb) {
-    return cb(null, user)
+    return cb(null, profile)
 }))
