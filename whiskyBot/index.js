@@ -469,7 +469,7 @@ bot.launch();
 //#####################################################################
 
 app.get('/', (req, res) => {
-    res.sendFile('./db.json');
+    res.sendFile(path.join(__dirname, 'db.json'));
 });
 
 
