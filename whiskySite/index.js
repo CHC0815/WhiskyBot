@@ -5,7 +5,15 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const cookieSession = require('cookie-session')
 require('./passport-setup')
+const adapter = new FileSync('whitelist.json');
+const db = low(adapter);
+const request = require('request')
 
+db.defaults({
+    allowed: []
+}).write();
+
+app.set('view engine', 'ejs');
 app.use(cors())
 app.use(bodyParser.urlencoded({
     extended: false
@@ -21,7 +29,14 @@ app.use(passport.session())
 
 const isLoggedIn = (req, res, next) => {
     if (req.user) {
-        next()
+        var user = db.get('allowrd').find({
+            email: req.user.email
+        })
+        if (user != undefined) {
+            next()
+        } else {
+            res.sendStatus(401)
+        }
     } else {
         res.sendStatus(401)
     }
@@ -31,7 +46,16 @@ const isLoggedIn = (req, res, next) => {
 app.get('/', (req, res) => res.send('You are not logged in! 😐 <br><a href="/google">Login</a>'))
 app.get('/failed', (req, res) => res.send('You failed to log in! 😥'))
 
-app.get('/whisky', isLoggedIn, (req, res) => res.send(`Moinsen ${req.user.displayName}`))
+app.get('/whisky', isLoggedIn, (req, res) => {
+    request('http://localhost:3000/', {}, (err, res, body) => {
+        if (err) {
+            console.log(err)
+            res.send('there was an error... 😓')
+        } else {
+            res.send(body)
+        }
+    })
+})
 
 app.get('/google', passport.authenticate('google', {
     scope: ['profile', 'email']
