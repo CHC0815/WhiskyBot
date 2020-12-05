@@ -39,7 +39,7 @@ app.get('/google', passport.authenticate('google', {
 app.get('/authenticate/google', passport.authenticate('google', {
     failureRedirect: '/login'
 }), function (req, res) {
-    res.redirect('/')
+    res.redirect('/whisky')
 })
 
 app.get('/logout', (req, res) => {
