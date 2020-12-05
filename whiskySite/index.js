@@ -1,139 +1,52 @@
-var express = require('express');
-var Session = require('express-session');
-var {
-    google
-} = require('googleapis');
-var OAuth2 = google.auth.OAuth2;
-var plus = google.plus('v1');
-var request = require('request');
-var axios = require('axios');
-var queryString = require('query-string');
-require('dotenv').config();
+const express = require('express')
+const app = express()
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const passport = require('passport')
+const cookieSession = require('cookie-session')
+require('./passport-setup')
 
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const adapter = new FileSync('whitelist.json');
-const db = low(adapter);
+app.use(cors())
+app.use(bodyParser.urlencoded({
+    extended: false
+}))
+app.use(cookieSession({
+    name: 'WhiskySite-Session',
 
-db.defaults({
-    allowed: []
-}).write();
-
-const app = express();
-app.use(Session({
-    secret: 'rdnm23186SecReTT54201!..,öasd',
-    resave: true,
-    saveUninitialized: true
-}));
-app.set('view engine', 'ejs');
-
-const stringifiedParams = queryString.stringify({
-    client_id: process.env.client_id,
-    redirect_uri: process.env.redirect_uri,
-    scope: [
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile',
-    ].join(' '),
-    response_type: 'code',
-    access_type: 'offline',
-    prompt: 'consent',
-});
-const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`;
+}))
+app.use(bodyParser.json())
+app.use(passport.initialize())
+app.use(passport.session())
 
 
-function getOAuthClient() {
-    return new OAuth2(process.env.client_id, process.env.client_secret, process.env.redirect_uri);
-}
-
-function getAuthUrl() {
-    var oauth2Client = getOAuthClient();
-    var scopes = [
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile',
-    ];
-    var url = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: scopes
-    });
-
-    return url;
-}
-
-app.get('/', (req, res) => {
-    var session = req.session;
-    if (session) {
-        var tokens = session["tokens"];
-        if (tokens) {
-            if (isValidUser(tokens)) {
-                res.render('index');
-            } else {
-                res.render('login', {
-                    google_url: getAuthUrl(),
-                    extra: 'You need a whitelisted account!'
-                });
-            }
-        }
+const isLoggedIn = (req, res, next) => {
+    if (req.user) {
+        next()
     } else {
-        res.redirect('/login');
+        res.sendStatus(401)
     }
-});
-
-app.get('/login', (req, res) => {
-    res.render('login', {
-        google_url: getAuthUrl(),
-        extra: ''
-    });
-});
-
-app.get('/authenticate/google', async (req, res) => {
-    var oauth2Client = getOAuthClient();
-    var session = req.session;
-    var code = req.query.code;
-
-    oauth2Client.getToken(code, function (err, tokens) {
-        if (!err) {
-            oauth2Client.setCredentials(tokens);
-            session["tokens"] = tokens;
-            res.redirect('/');
-        }
-    });
-});
-
-async function isValidUser(tokens) {
-
-    var oauth2Client = getOAuthClient();
-    oauth2Client.setCredentials(tokens);
-
-    var p = new Promise(function (resolve, reject) {
-        plus.people.get({
-            userId: 'me',
-            auth: oauth2Client
-        }, function (err, response) {
-            resolve(response || err);
-        });
-    }).then(function (data) {
-        //check whether the current user is whitelisted
-        var user = db.get('allowed').find({
-            email: data.email
-        });
-
-        if (user != undefined) {
-            return true;
-        } else {
-            return false;
-        }
-    });
 }
 
-app.get('/test', (req, res) => {
-    request('http://localhost:3000/', {}, (err, response, body) => {
-        if (err) {
-            console.log(err);
-            res.send('test was not successful 😥');
-        }
-        res.send(body);
-    });
-});
+
+app.get('/', (req, res) => res.send('You are not logged in! 😐 <br><a href="/google">Login</a>'))
+app.get('/failed', (req, res) => res.send('You failed to log in! 😥'))
+
+app.get('/whisky', isLoggedIn, (req, res) => res.send(`Moinsen ${req.user.email}`))
+
+app.get('/google', passport.authenticate('google', {
+    scope: ['profile', 'email']
+}))
+app.get('/authenticate/google', passport.authenticate('google', {
+    failureRedirect: '/login'
+}), function (req, res) {
+    res.redirect('/')
+})
+
+app.get('/logout', (req, res) => {
+    req.session = null
+    req.logout()
+    res.redirect('/')
+})
 
 app.listen(80, () => {
     console.log('WhiskySite listening on port 80!')
