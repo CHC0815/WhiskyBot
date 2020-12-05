@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(cookieSession({
     name: 'WhiskySite-Session',
-
+    keys: ['key1', 'key2']
 }))
 app.use(bodyParser.json())
 app.use(passport.initialize())
