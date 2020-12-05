@@ -49,12 +49,12 @@ app.get('/', (req, res) => res.send('You are not logged in! 😐 <br><a href="/g
 app.get('/failed', (req, res) => res.send('You failed to log in! 😥'))
 
 app.get('/whisky', isLoggedIn, (req, res) => {
-    request('http://localhost:3000/', {}, (err, res, body) => {
-        if (err) {
-            console.log(err)
+    request('http://localhost:3000/', {}, (_err, _res, _body) => {
+        if (_err) {
+            console.log(_err)
             res.send('there was an error... 😓')
         } else {
-            res.send(body)
+            res.send(_body)
         }
     })
 })
