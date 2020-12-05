@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const cookieSession = require('cookie-session')
 require('./passport-setup')
+const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 const request = require('request')
