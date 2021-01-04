@@ -11,6 +11,8 @@ const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 const request = require('request')
 
+
+//initializes the json database and the express app
 db.defaults({
     allowed: []
 }).write();
@@ -29,9 +31,11 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 
+//checks if a user is logged in and allowed
+//use this to protect a route
 const isLoggedIn = (req, res, next) => {
     if (req.user) {
-        var user = db.get('allowrd').find({
+        var user = db.get('allowed').find({
             email: req.user.email
         })
         if (user != undefined) {
@@ -44,7 +48,7 @@ const isLoggedIn = (req, res, next) => {
     }
 }
 
-
+//standard routes
 app.get('/', (req, res) => res.send('You are not logged in! 😐 <br><a href="/google">Login</a>'))
 app.get('/failed', (req, res) => res.send('You failed to log in! 😥'))
 
@@ -54,26 +58,64 @@ app.get('/whisky', isLoggedIn, (req, res) => {
             console.log(_err)
             res.send('there was an error... 😓')
         } else {
-            res.send(_body)
+            var db = _body
+            // TODO: render each bottle
+
+            db = JSON.parse(db)
+            var bottles = db["bottles"]
+            
+            var params = []
+
+            for (var i = 0; i < bottles.length; i++)
+            {
+                //current item
+                var item = bottles[i]
+                //current bottle
+                var bottle = {
+                    whiskyName: item.name,
+                    volume: item.volume,
+                    level: item.level,
+                    id: item.bottleid,
+                    whiskyCreator: item.userid
+                }
+                //list of users of the current bottle
+                var users = item["users"]
+                //param object of current bottle
+                var _params = {
+                    "bottle": bottle,
+                    "users": users,
+                }
+                //push current bottle params to global list
+                params.push(_params)
+            }
+            res.render('index', {
+                "path": __dirname + "/views/whisky.ejs",
+                "params": params
+            })
         }
     })
 })
 
+//google authentification route
 app.get('/google', passport.authenticate('google', {
     scope: ['profile', 'email']
 }))
+
+//google redirect route after authentification
 app.get('/authenticate/google', passport.authenticate('google', {
     failureRedirect: '/login'
 }), function (req, res) {
     res.redirect('/whisky')
 })
 
+//removes the session to log out a user
 app.get('/logout', (req, res) => {
     req.session = null
     req.logout()
     res.redirect('/')
 })
 
+//starts the WhiskySite on port 80
 app.listen(80, () => {
     console.log('WhiskySite listening on port 80!')
 });

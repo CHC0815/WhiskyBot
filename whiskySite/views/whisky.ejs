@@ -1,0 +1,25 @@
+<!-- BEGIN WHISKY -->
+<li>
+    <button class="btn btn-primary collapsible" type="button">
+        <%- _params.bottle.whiskyName -> by <%- _params.bottle.whiskyCreator -> [<%- _params.bottle.level ->cl/<%- _params.bottle.volume ->cl]
+    </button>
+    <div class="mdc-data-table" style="display: none;">
+        <table class="mdc-data-table__table">
+            <thead>
+                <tr class="mdc-data-table__header-row">
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Name</th>
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Menge</th>
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Preis</th>
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">✔</th>
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">❌</th>
+                </tr>
+            </thead>
+            <tbody class="mdc-data-table__content">
+                <% _params.users.forEach(function(item){ %>
+                    <%- include(params.path, {name: item.name, volume: item.volume, price: item.price}); -%>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</li>
+<!-- END WHISKY -->
