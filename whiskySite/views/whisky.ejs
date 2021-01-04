@@ -1,7 +1,7 @@
 <!-- BEGIN WHISKY -->
 <li>
     <button class="btn btn-primary collapsible" type="button">
-        <%- _params.bottle.whiskyName -> by <%- _params.bottle.whiskyCreator -> [<%- _params.bottle.level ->cl/<%- _params.bottle.volume ->cl]
+        <%= _params.bottle.whiskyName %> by <%= _params.bottle.whiskyCreator %> [<%= _params.bottle.level %>cl/<%= _params.bottle.volume %>cl]
     </button>
     <div class="mdc-data-table" style="display: none;">
         <table class="mdc-data-table__table">
