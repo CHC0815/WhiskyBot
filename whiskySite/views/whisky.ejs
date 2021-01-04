@@ -16,7 +16,7 @@
             </thead>
             <tbody class="mdc-data-table__content">
                 <% _params.users.forEach(function(item){ %>
-                    <%- include('whisky_user', {name: item.name, volume: item.volume, price: item.price}); %>
+                    <%- include('whisky_user', {name: item.amount, amount: item.amount, price: item.price}); %>
                 <% }); %>
             </tbody>
         </table>

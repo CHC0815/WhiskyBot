@@ -106,9 +106,6 @@ function getBottleString(_bottleid) {
     let str = `Neue Flasche 🍾:
 Name: ${bottle.name}
 Beschreibung: ${bottle.desc}
-Preis 2ml: ${bottle.price2} €
-Preis 10ml: ${bottle.price10} €
-Preis 20ml: ${bottle.price20} €
 Füllstand: ${bottle.level} cl
 ----------------------------\n`;
 
@@ -121,15 +118,23 @@ Füllstand: ${bottle.level} cl
 function extractFromBottle(_bottleid, amount) {
     db.get('bottles').find({
         bottleid: _bottleid
-    }).update('level', n => parseInt(n) - amount).write();
+    }).update('level', n => parseInt(n) - amount).write()
 }
 
 function canExtract(_bottleid, amount) {
     let bottle = db.get('bottles').find({
         bottleid: _bottleid
-    }).value();
+    }).value()
 
-    return parseInt(bottle.level) >= amount;
+    return parseInt(bottle.level) >= amount
+}
+
+function getPrice(_bottleid, amount){
+    let bottle = db.get('bottles').find({
+        bottleid: _bottleid
+    }).value()
+    let str = "sample" + amount + "cl"
+    return bottle[str] || -1
 }
 
 bot.command('help', (ctx) => {
@@ -311,7 +316,8 @@ async function want(ctx, amount) {
             bottleid: _bottleid
         }).get('users').push({
             name: name,
-            amount: amount
+            amount: amount,
+            price: getPrice(_bottleid, amount)
         }).write();
         ctx.telegram.editMessageText(_chatid, _msgid, null, getBottleString(_bottleid), {
             reply_markup: getButtons(_bottleid)
