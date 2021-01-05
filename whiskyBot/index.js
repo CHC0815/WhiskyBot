@@ -503,8 +503,8 @@ app.get('/order/delete/:bottleid/:orderid', (req, res) => {
     
 })
 app.get('/order/ok/:bottleid/:orderid', (req, res) => {
-    var bottleid = req.params.bottleid
-    var orderid = req.params.orderid
+    var _bottleid = req.params.bottleid
+    var _orderid = req.params.orderid
 
     //remove order but does not reset level 
     var order = db.get('bottles').find({bottleid: _bottleid}).get('users').find({orderid: _orderid}).value() 
