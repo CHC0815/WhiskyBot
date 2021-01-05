@@ -99,7 +99,7 @@ function getID() {
     return _id;
 }
 function getNextOrderId(){
-    let _orderid = db.get('id').value();
+    let _orderid = db.get('orderid').value();
     db.update('orderid', n => n + 1).write();
     return _orderid;
 }
