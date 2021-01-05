@@ -11,6 +11,7 @@ const db = low(adapter);
 
 db.defaults({
     id: 0,
+    orderid: 0,
     addBottleUsers: [],
     bottles: []
 }).write();
@@ -96,6 +97,11 @@ function getID() {
     let _id = db.get('id').value();
     db.update('id', n => n + 1).write();
     return _id;
+}
+function getNextOrderId(){
+    let _orderid = db.get('id').value();
+    db.update('orderid', n => n + 1).write();
+    return _orderid;
 }
 
 function getBottleString(_bottleid) {
@@ -296,6 +302,7 @@ async function want(ctx, amount) {
     let username = ctx.update.callback_query.from.username;
     let firstname = ctx.update.callback_query.from.first_name;
     let lastname = ctx.update.callback_query.from.last_name;
+    let id = ctx.update.callback_query.from.id;
 
     let name = '';
     if (firstname) {
@@ -317,7 +324,10 @@ async function want(ctx, amount) {
         }).get('users').push({
             name: name,
             amount: amount,
-            price: getPrice(_bottleid, amount)
+            price: getPrice(_bottleid, amount),
+            bottleid: _bottleid,
+            userid: id,
+            orderid: getNextOrderId()
         }).write();
         ctx.telegram.editMessageText(_chatid, _msgid, null, getBottleString(_bottleid), {
             reply_markup: getButtons(_bottleid)
@@ -472,13 +482,38 @@ bot.action('add20cl', (ctx) => handleSampleRequest(ctx, 20));
 bot.launch();
 
 //#####################################################################
-//                          API
+//                                API
 //#####################################################################
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'db.json'));
 });
 
+app.get('/order/delete/:bottleid/:orderid', (req, res) => {
+    var _bottleid = req.params.bottleid
+    var _orderid = req.params.orderid
+    
+    //can be imporved very much
+    //will be improved after database change e.g. mongodb
+
+    //remove order and reset level
+    var amount = db.get('bottles').find({bottleid: _bottleid}).get('users').find({orderid: _orderid}).value().amount
+    db.get('bottles').find({bottleid: _bottleid}).get('users').remove({orderid: _orderid}).write()
+    db.get('bottles').find({bottleid: _bottleid}).update('level', level => level + amount).write()
+    
+})
+app.get('/order/ok/:bottleid/:orderid', (req, res) => {
+    var bottleid = req.params.bottleid
+    var orderid = req.params.orderid
+
+    //remove order but does not reset level 
+    var order = db.get('bottles').find({bottleid: _bottleid}).get('users').find({orderid: _orderid}).value() 
+    db.get('bottles').find({bottleid: _bottleid}).get('users').remove({orderid: _orderid}).write()
+
+    var bottlename = db.get('bottles').find({bottleid: _bottleid}).value().name
+
+    bot.telegram.sendMessage(order.userid, `Deine Bestellung ${order.amount}cl für ${order.price}€ von der Flasche ${bottlename} wurde abgeschlossen.`)
+})
 
 
 //only allow requests form localhost

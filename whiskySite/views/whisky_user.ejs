@@ -3,7 +3,7 @@
     <td class="mdc-data-table__cell"><%= name %></td>
     <td class="mdc-data-table__cell"><%= amount %>cl</td>
     <td class="mdc-data-table__cell"><%= price %>€</td>
-    <td class="mdc-data-table__cell">ok button</td> <!-- TODO: implement ok and error button 'button(id)' -->
-    <td class="mdc-data-table__cell">err button</td>
+    <td class="mdc-data-table__cell"><button onclick="okbtn(<%= bottleid %>, <%= orderid %>)">✔</button>></td>
+    <td class="mdc-data-table__cell"><button onclick="errbtn(<%= bottleid %>, <%= orderid %>)">❌</button>></td>
 </tr>
 <!-- END USER -->

@@ -108,6 +108,33 @@ app.get('/authenticate/google', passport.authenticate('google', {
     res.redirect('/whisky')
 })
 
+//passthrough
+app.get('/order/delete/:bottleid/:orderid', (req, res) => {
+    var bottleid = req.params.bottleid;
+    var orderid = req.params.orderid;
+    request('http://localhost:3000/order/delete/' + bottleid + '/' + orderid, {}, (_err, _res, _body) => {
+        if (_err) {
+            console.log(_err)
+            res.send('there was an error... 😓')
+        }else{
+            res.send(_body)
+        }
+    })
+})
+//passthrough
+app.get('/order/ok/:bottleid/:orderid', (req, res) => {
+    var bottleid = req.params.bottleid;
+    var orderid = req.params.orderid;
+    request('http://localhost:3000/order/ok/' + bottleid + '/' + orderid, {}, (_err, _res, _body) => {
+        if (_err) {
+            console.log(_err)
+            res.send('there was an error... 😓')
+        }else{
+            res.send(_body)
+        }
+    })
+})
+
 //removes the session to log out a user
 app.get('/logout', (req, res) => {
     req.session = null

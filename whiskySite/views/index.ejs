@@ -64,6 +64,37 @@
             });
         }
     </script>
+    <script>
+        function get(route, cb)
+        {
+            var xhttp;
+            xhttp=new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    cb(this);
+                }else{
+                    console.log("AJAX error:")
+                    console.log(this.status);
+                    console.log(this);
+                }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        }
+
+        function okbtn(bottleid, orderid)
+        {
+            get('order/ok/' + bottleid + '/' + orderid, (xhttp)=>{
+                alert(xhttp.responseText);
+            });
+        }
+        function errbtn(bottleid, orderid)
+        {
+            get('/order/delete/' + bottleid + '/' + orderid, (xhttp)=>{
+                alert(xhttp.responseText);
+            });
+        }
+    </script>
 </body>
 
 </html>
