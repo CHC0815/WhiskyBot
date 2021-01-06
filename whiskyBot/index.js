@@ -490,8 +490,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/order/delete/:bottleid/:orderid', (req, res) => {
-    var _bottleid = req.params.bottleid
-    var _orderid = req.params.orderid
+    var _bottleid = parseInt(req.params.bottleid)
+    var _orderid = parseInt(req.params.orderid)
     
     //can be imporved very much
     //will be improved after database change e.g. mongodb
@@ -503,10 +503,8 @@ app.get('/order/delete/:bottleid/:orderid', (req, res) => {
     
 })
 app.get('/order/ok/:bottleid/:orderid', (req, res) => {
-    var _bottleid = req.params.bottleid
-    var _orderid = req.params.orderid
-
-    return res.send(JSON.stringify({bid: _bottleid, oid: _orderid}))
+    var _bottleid = parseInt(req.params.bottleid)
+    var _orderid = parseInt(req.params.orderid)
 
     //remove order but does not reset level 
     var order = db.get('bottles').find({bottleid: _bottleid}).get('users').find({orderid: _orderid}).value() 
