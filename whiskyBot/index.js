@@ -506,6 +506,8 @@ app.get('/order/ok/:bottleid/:orderid', (req, res) => {
     var _bottleid = req.params.bottleid
     var _orderid = req.params.orderid
 
+    return res.send(JSON.stringify({bid: _bottleid, oid: _orderid}))
+
     //remove order but does not reset level 
     var order = db.get('bottles').find({bottleid: _bottleid}).get('users').find({orderid: _orderid}).value() 
     db.get('bottles').find({bottleid: _bottleid}).get('users').remove({orderid: _orderid}).write()
