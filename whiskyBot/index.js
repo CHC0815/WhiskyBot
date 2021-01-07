@@ -143,6 +143,17 @@ function getPrice(_bottleid, amount){
     return bottle[str] || -1
 }
 
+function updateBottleInTelegram(_bottleid){
+    var bottle = db.get('bottles').find({bottleid: _bottleid}).value()
+    var _chatid = bottle.chatid
+    var _msgid = bottle.msgid
+
+    bot.telegram.editMessageText(_chatid, _msgid, null, getBottleString(_bottleid), {
+        reply_markup: getButtons(_bottleid)
+    });
+}
+
+
 bot.command('help', (ctx) => {
     ctx.reply(`Flasche hinzufügen /add\nVorgang beenden /stopBottle\nBot entfernen /quit`);
 });
@@ -489,6 +500,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'db.json'));
 });
 
+//TODO: render in telegram chat
 app.get('/order/delete/:bottleid/:orderid', (req, res) => {
     var _bottleid = parseInt(req.params.bottleid)
     var _orderid = parseInt(req.params.orderid)
@@ -497,10 +509,16 @@ app.get('/order/delete/:bottleid/:orderid', (req, res) => {
     //will be improved after database change e.g. mongodb
 
     //remove order and reset level
-    var amount = db.get('bottles').find({bottleid: _bottleid}).get('users').find({orderid: _orderid}).value().amount
+    var order = db.get('bottles').find({bottleid: _bottleid}).get('users').find({orderid: _orderid}).value() 
+    var amount = order.amount
     db.get('bottles').find({bottleid: _bottleid}).get('users').remove({orderid: _orderid}).write()
     db.get('bottles').find({bottleid: _bottleid}).update('level', level => level + amount).write()
     
+    bot.telegram.sendMessage(order.userid, `Deine Bestellung ${order.amount}cl für ${order.price}€ von der Flasche ${bottlename} wurde stoniert.`)
+
+    updateBottleInTelegram(_bottleid)
+
+    res.send(`200`)
 })
 app.get('/order/ok/:bottleid/:orderid', (req, res) => {
     var _bottleid = parseInt(req.params.bottleid)
@@ -513,6 +531,10 @@ app.get('/order/ok/:bottleid/:orderid', (req, res) => {
     var bottlename = db.get('bottles').find({bottleid: _bottleid}).value().name
 
     bot.telegram.sendMessage(order.userid, `Deine Bestellung ${order.amount}cl für ${order.price}€ von der Flasche ${bottlename} wurde abgeschlossen.`)
+
+    updateBottleInTelegram(_bottleid)
+
+    res.send(`200`)
 })
 
 
