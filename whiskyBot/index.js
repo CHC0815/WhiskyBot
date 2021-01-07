@@ -513,11 +513,11 @@ app.get('/order/delete/:bottleid/:orderid', (req, res) => {
     var amount = order.amount
     db.get('bottles').find({bottleid: _bottleid}).get('users').remove({orderid: _orderid}).write()
     db.get('bottles').find({bottleid: _bottleid}).update('level', level => level + amount).write()
-    
+
+    var bottlename = db.get('bottles').find({bottleid: _bottleid}).value().name
     bot.telegram.sendMessage(order.userid, `Deine Bestellung ${order.amount}cl für ${order.price}€ von der Flasche ${bottlename} wurde stoniert.`)
 
     updateBottleInTelegram(_bottleid)
-
     res.send(`200`)
 })
 app.get('/order/ok/:bottleid/:orderid', (req, res) => {
@@ -529,11 +529,9 @@ app.get('/order/ok/:bottleid/:orderid', (req, res) => {
     db.get('bottles').find({bottleid: _bottleid}).get('users').remove({orderid: _orderid}).write()
 
     var bottlename = db.get('bottles').find({bottleid: _bottleid}).value().name
-
     bot.telegram.sendMessage(order.userid, `Deine Bestellung ${order.amount}cl für ${order.price}€ von der Flasche ${bottlename} wurde abgeschlossen.`)
 
     updateBottleInTelegram(_bottleid)
-
     res.send(`200`)
 })
 
