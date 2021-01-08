@@ -10,4 +10,4 @@ var userAuthUrl = authApi.getOAuthRequestToken().then(({token, secret}) => {
 })
 
 
-module.exports = userAuthUrl
+module.exports = { userAuthUrl, userOAuthToken, userOAuthTokenSecret, authApi }

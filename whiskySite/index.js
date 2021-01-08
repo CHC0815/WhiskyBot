@@ -10,7 +10,8 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 const request = require('request')
-const userAuthUrl = require('./splitwise')
+var AuthApi = require('splitwise-node')
+const splitwise = require('./splitwise')
 
 //initializes the json database and the express app
 db.defaults({
@@ -54,7 +55,7 @@ app.get('/failed', (req, res) => res.send('You failed to log in! 😥'))
 
 
 app.get('/splitwise', isLoggedIn, (req, res) => {
-    var url = userAuthUrl()
+    var url = splitwise.userAuthUrl()
     return res.send(`<a href="${url}">Click me</a>`)
 })
 
