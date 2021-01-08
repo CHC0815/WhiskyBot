@@ -10,7 +10,7 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 const request = require('request')
-
+require('./splitwise')
 
 //initializes the json database and the express app
 db.defaults({
@@ -51,6 +51,13 @@ const isLoggedIn = (req, res, next) => {
 //standard routes
 app.get('/', (req, res) => res.send('You are not logged in! 😐 <br><a href="/google">Login</a>'))
 app.get('/failed', (req, res) => res.send('You failed to log in! 😥'))
+
+
+app.get('/splitwise', isLoggedIn, (req, res) => {
+    var url = userAuthUrl()
+    return res.send(`<a href="${url}">Click me</a>`)
+})
+
 
 app.get('/whisky', isLoggedIn, (req, res) => {
     request('http://localhost:3000/', {}, (_err, _res, _body) => {
