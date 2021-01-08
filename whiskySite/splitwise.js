@@ -1,4 +1,3 @@
-const { apigateway } = require('googleapis/build/src/apis/apigateway')
 var AuthApi = require('splitwise-node')
 
 //api key 0sRaXQPTyrWKHlNw2vsQ4PcwsQr4TLjhxojCXK4y
@@ -9,3 +8,6 @@ var userAuthUrl = authApi.getOAuthRequestToken().then(({token, secret}) => {
     [userOAuthToken, userOAuthTokenSecret] = [token, secret]
     return apigateway.getUserAuthorisationUrl(token)
 })
+
+
+module.exports = userAuthUrl
