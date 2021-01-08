@@ -1,4 +1,11 @@
-echo "starting update..."
+echo "╭─────────────────────────────────────────────────────────────────╮"
+echo "│                                                                 │"
+echo "│                         Starting Update                         │"
+echo "│                         [] whiskyBot                            │"
+echo "│                         [] whiskySite                           │"
+echo "│                                                                 │"
+echo "╰─────────────────────────────────────────────────────────────────╯"
+
 
 pm2 stop whiskyBot
 pm2 stop whiskySite
@@ -18,4 +25,10 @@ cd whiskySite
 pm2 start index.js --name whiskySite
 cd ..
 
-echo "update done..."
+echo "╭─────────────────────────────────────────────────────────────────╮"
+echo "│                                                                 │"
+echo "│                         Update Done                             │"
+echo "│                         [*] whiskyBot                           │"
+echo "│                         [*] whiskySite                          │"
+echo "│                                                                 │"
+echo "╰─────────────────────────────────────────────────────────────────╯"

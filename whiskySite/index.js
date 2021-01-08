@@ -58,7 +58,6 @@ app.get('/splitwise', isLoggedIn, (req, res) => {
     return res.send(`<a href="${url}">Click me</a>`)
 })
 
-
 app.get('/whisky', isLoggedIn, (req, res) => {
     request('http://localhost:3000/', {}, (_err, _res, _body) => {
         if (_err) {
