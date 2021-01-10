@@ -38,7 +38,7 @@ const isLoggedIn = (req, res, next) => {
     if (req.user) {
         var user = db.get('allowed').find({
             email: req.user.email
-        })
+        }).value()
         if (user != undefined) {
             next()
         } else {
