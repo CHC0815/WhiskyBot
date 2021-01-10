@@ -243,36 +243,51 @@ bot.on('text', (ctx) => {
                 break;
                 //volume of bottle
             case 2:
-                db.get('addBottleUsers').find({
-                    id: userid
-                }).set('bottle.volume', msg).write();
-                ctx.telegram.sendMessage(userid, 'Füllstand der Flasche in cl: ');
-                db.get('addBottleUsers').find({
-                    id: userid
-                }).update('stage', n => n + 1).write();
+                if(isNaN(Number(msg)))
+                {
+                    ctx.telegram.sendMessage(userid, 'Volumen muss eine Zahl sein. Volumen in cl: ');
+                }else{
+                    db.get('addBottleUsers').find({
+                        id: userid
+                    }).set('bottle.volume', msg).write();
+                    ctx.telegram.sendMessage(userid, 'Füllstand der Flasche in cl: ');
+                    db.get('addBottleUsers').find({
+                        id: userid
+                    }).update('stage', n => n + 1).write();
+                }
                 break;
                 //level of bottle
             case 3:
-                db.get('addBottleUsers').find({
-                    id: userid
-                }).set('bottle.level', msg).write();
-                ctx.telegram.sendMessage(userid, 'Preis der Flasche: ');
-                db.get('addBottleUsers').find({
-                    id: userid
-                }).update('stage', n => n + 1).write();
+                if(isNaN(Number(msg)))
+                {
+                    ctx.telegram.sendMessage(userid, 'Volumen muss eine Zahl sein. Volumen in cl: ');
+                }else{
+                    db.get('addBottleUsers').find({
+                        id: userid
+                    }).set('bottle.level', msg).write();
+                    ctx.telegram.sendMessage(userid, 'Preis der Flasche: ');
+                    db.get('addBottleUsers').find({
+                        id: userid
+                    }).update('stage', n => n + 1).write();
+                }
                 break;
                 //price of bottle
             case 4:
-                db.get('addBottleUsers').find({
-                    id: userid
-                }).set('bottle.price', msg).write();
-                ctx.telegram.sendMessage(userid, 'Samplegrößen: ', {
-                    reply_markup: getSampleButtons(entry.bottle.boolArr)
-                });
-                ctx.telegram.sendMessage(userid, `Um den Vorgang abzuschließen sende eine Nachricht.`);
-                db.get('addBottleUsers').find({
-                    id: userid
-                }).update('stage', n => n + 1).write();
+                if(isNaN(Number(msg)))
+                {
+                    ctx.telegram.sendMessage(userid, 'Volumen muss eine Zahl sein. Volumen in cl: ');
+                }else{
+                    db.get('addBottleUsers').find({
+                        id: userid
+                    }).set('bottle.price', msg).write();
+                    ctx.telegram.sendMessage(userid, 'Samplegrößen: ', {
+                        reply_markup: getSampleButtons(entry.bottle.boolArr)
+                    });
+                    ctx.telegram.sendMessage(userid, `Um den Vorgang abzuschließen sende eine Nachricht.`);
+                    db.get('addBottleUsers').find({
+                        id: userid
+                    }).update('stage', n => n + 1).write();
+                }
                 break;
             case 5:
                 ctx.telegram.sendMessage(userid, 'Die Flasche wurde hinzugefügt.! 👍');
@@ -292,8 +307,7 @@ bot.on('text', (ctx) => {
                         bottleid: _bottleid
                     }).set('msgid', msg.message_id).write();
                 });
-
-
+                
                 db.get('addBottleUsers').remove({
                     id: userid
                 }).write();
