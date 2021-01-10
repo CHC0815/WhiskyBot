@@ -35,6 +35,9 @@ app.use(passport.session())
 //checks if a user is logged in and allowed
 //use this to protect a route
 const isLoggedIn = (req, res, next) => {
+    console.log("Request USER:")
+    console.log(req.user)
+
     if (req.user) {
         var user = db.get('allowed').find({
             email: req.user.email
