@@ -35,16 +35,12 @@ app.use(passport.session())
 //checks if a user is logged in and allowed
 //use this to protect a route
 const isLoggedIn = (req, res, next) => {
-    console.log("Request email:")
-    console.log(req.user._json.email)
-
     if (req.user) {
         var user = db.get('allowed').find({
             email: req.user._json.email
         }).value()
-        console.log("USER:")
-        console.log(user)
         if (user != undefined) {
+            req.whiskyUser = user
             next()
         } else {
             res.sendStatus(401)
@@ -76,29 +72,34 @@ app.get('/whisky', isLoggedIn, (req, res) => {
             db = JSON.parse(db)
             var bottles = db["bottles"]
             
+            var whiskyUser = req.whiskyUser
             var params = []
 
             for (var i = 0; i < bottles.length; i++)
             {
                 //current item
                 var item = bottles[i]
-                //current bottle
-                var bottle = {
-                    whiskyName: item.name,
-                    volume: item.volume,
-                    level: item.level,
-                    id: item.bottleid,
-                    whiskyCreator: item.userid
+                //only add bottle if current user is creator of the bottle share
+                if(item.userid == whiskyUser.telegramID || whiskyUser.role == "admin")
+                {
+                    //current bottle
+                    var bottle = {
+                        whiskyName: item.name,
+                        volume: item.volume,
+                        level: item.level,
+                        id: item.bottleid,
+                        whiskyCreator: item.userid
+                    }
+                    //list of users of the current bottle
+                    var users = item["users"]
+                    //param object of current bottle
+                    var _params = {
+                        "bottle": bottle,
+                        "users": users,
+                    }
+                    //push current bottle params to global list
+                    params.push(_params)
                 }
-                //list of users of the current bottle
-                var users = item["users"]
-                //param object of current bottle
-                var _params = {
-                    "bottle": bottle,
-                    "users": users,
-                }
-                //push current bottle params to global list
-                params.push(_params)
             }
             res.render('index', {
                 "path": __dirname + "/views/whisky.ejs",
