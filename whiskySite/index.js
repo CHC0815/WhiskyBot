@@ -11,6 +11,7 @@ const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 const request = require('request')
 const https = require('https')
+const http = require('http')
 var fs = require('fs');
 
 var privateKey = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/privkey.pem', 'utf8')
@@ -161,8 +162,19 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
-//starts the WhiskySite on port 80
+//starts the WhiskySite on port 443
 var httpsServer = https.createServer(credentials, app)
 httpsServer.listen(443, () => {
     console.log("WhiskySite is running on port 443")
+})
+
+//starts simple http server
+const requestListener = function(req, res) {
+    res.writeHead(200)
+    res.end('Please Use Https')
+}
+
+var httpServer = http.createServer(requestListener)
+httpServer.listen(80, () => {
+    console.log("Basic http server is running on port 80")
 })
