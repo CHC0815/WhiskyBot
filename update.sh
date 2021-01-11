@@ -36,6 +36,6 @@ echo "╰───────────────────────�
 echo "Add CertBot hook scripts"
 sh -c 'printf "sudo pm2 stop all \n" > /etc/letsencrypt/renewal-hooks/pre/whiskybot.sh'
 sh -c 'printf "sudo bash /home/conrad/WhiskyBot/update.sh \n" > /etc/letsencrypt/renewal-hooks/post/whiskybot.sh'
-chmod 755 /etc/letsencrypt/renewal-hooks/pre/haproxy.sh
-chmod 755 /etc/letsencrypt/renewal-hooks/post/haproxy.sh
+chmod 755 /etc/letsencrypt/renewal-hooks/pre/whiskybot.sh
+chmod 755 /etc/letsencrypt/renewal-hooks/post/whiskybot.sh
 echo "Finished adding CertBot hook scripts"
