@@ -10,6 +10,11 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 const request = require('request')
+const https = require('https')
+
+var privateKey = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/privkey.pem', 'utf8')
+var certificate = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/fullchain.pem', 'utf8')
+var credentials = {key: privateKey, cert: certificate};
 //var AuthApi = require('splitwise-node')
 //const splitwise = require('./splitwise')
 
@@ -156,6 +161,7 @@ app.get('/logout', (req, res) => {
 })
 
 //starts the WhiskySite on port 80
-app.listen(80, () => {
-    console.log('WhiskySite listening on port 80!')
-});
+var httpsServer = https.createServer(credentials, app)
+httpsServer.listen(443, () => {
+    console.log("WhiskySite is running on port 443")
+})
