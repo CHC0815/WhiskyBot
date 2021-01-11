@@ -11,6 +11,7 @@ const adapter = new FileSync('whitelist.json');
 const db = low(adapter);
 const request = require('request')
 const https = require('https')
+var fs = require('fs');
 
 var privateKey = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/privkey.pem', 'utf8')
 var certificate = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/fullchain.pem', 'utf8')
