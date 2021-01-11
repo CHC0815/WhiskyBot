@@ -14,8 +14,8 @@ const https = require('https')
 const http = require('http')
 var fs = require('fs');
 
-var privateKey = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/privkey.pem', 'utf8')
-var certificate = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/fullchain.pem', 'utf8')
+var privateKey = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/privkey.pem')
+var certificate = fs.readFileSync('/etc/letsencrypt/live/challenger227.mydhp.de/fullchain.pem')
 var credentials = {key: privateKey, cert: certificate};
 //var AuthApi = require('splitwise-node')
 //const splitwise = require('./splitwise')
