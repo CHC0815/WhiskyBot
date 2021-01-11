@@ -1,5 +1,6 @@
 # Changelog
-
+## Version 0.0.1
+* HTTPS support via CertBot
 ## Version 0.0.1
 * Invite Bot to group
 * start private conversation with bot
