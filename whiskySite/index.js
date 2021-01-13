@@ -164,7 +164,7 @@ app.get('/logout', (req, res) => {
 
 //starts the WhiskySite on port 443
 var httpsServer = https.createServer(credentials, app)
-httpsServer.listen(443, '0.0.0.0', () => {
+httpsServer.listen(443, () => {
     console.log("WhiskySite is running on port 443")
 })
 
