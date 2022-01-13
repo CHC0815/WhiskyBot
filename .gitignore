@@ -3,3 +3,5 @@ whiskySite/node_modules/
 whiskyBot/db.json
 whiskyBot/todo
 tmp
+whiskySite/.env
+whiskyBot/.env
